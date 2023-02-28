@@ -1,0 +1,19 @@
+{
+  "customDataSourceType": "wordpress/featured-posts",
+  "name": "Wordpress Featured Posts",
+  "category": "Content",
+  "icon": "view_headline",
+  "schema": [
+    {
+      "name": "Settings",
+      "fields": [
+        {
+          "label": "Attribute Filters",
+          "field": "postFilters",
+          "type": "dynamic-filter",
+          "dynamicFilterEndpoint": "/frontastic/action/wordpress/getPostFilters"
+        }
+      ]
+    }
+  ]
+}

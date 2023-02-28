@@ -1,0 +1,19 @@
+{
+    "customDataSourceType": "wordpress/page-content",
+    "name": "Wordpress Page Content",
+    "category": "Content",
+    "icon": "view_headline",
+    "schema": [
+      {
+        "name": "Settings",
+        "fields": [
+          {
+            "label": "Page Handle",
+            "field": "pageHandle",
+            "type": "string",
+            "translatable": false
+          }
+        ]
+      }
+    ]
+  }
