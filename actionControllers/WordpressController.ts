@@ -17,10 +17,10 @@ type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Re
  * @returns {Promise<Response>}
  */
 export const getPostFilters: ActionHook = async (request: Request, actionContext: ActionContext): Promise<Response> => {
-  const { host } = actionContext?.frontasticContext?.project?.configuration['wordpress'];
-  const apollo = new WordpressApollo(host);
-
   try {
+    const { host } = actionContext?.frontasticContext?.project?.configuration['wordpress'];
+    const apollo = new WordpressApollo(`${host}/graphql`);
+
     const postFilterData = await apollo.getWordpress({
       query: postFilters,
     });

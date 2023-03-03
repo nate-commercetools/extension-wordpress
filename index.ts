@@ -15,28 +15,33 @@ export default {
         // Variables are extracted from Dynamic Filters in studio, if no filters are found then
         // the query will just return the latest posts
         const variables = {
-        categoryName: config.configuration.categoryTerm.values['post.attributes.categories'] ? config.configuration.categoryTerm.values['post.attributes.categories'] : '',
-        postTags: config.configuration.categoryTerm.values['post.attributes.tags'] ? config.configuration.categoryTerm.values['post.attributes.tags'] : '',
-      };
+          categoryName: config.configuration.postFilters.values['post.attributes.categories']
+            ? config.configuration.postFilters.values['post.attributes.categories']
+            : '',
+          postTags: config.configuration.postFilters.values['post.attributes.tags']
+            ? config.configuration.postFilters.values['post.attributes.tags']
+            : '',
+        };
 
-      const { posts } = await apollo.getWordpress({
-        query: postListQuery,
-        variables
-      });
+        const { posts } = await apollo.getWordpress({
+          query: postListQuery,
+          variables,
+        });
 
-      return {
-        dataSourcePayload: { blogPosts: posts },
-      } as DataSourceResult;
+        return {
+          dataSourcePayload: { blogPosts: posts },
+        } as DataSourceResult;
       } catch (error) {
         return {
-            dataSourcePayload: error,
-          } as DataSourceResult;
+          dataSourcePayload: error,
+        } as DataSourceResult;
       }
     },
     'wordpress/page-content': async (
-        config: DataSourceConfiguration,
-        context: DataSourceContext,
-      ): Promise<DataSourceResult> => {
+      config: DataSourceConfiguration,
+      context: DataSourceContext,
+    ): Promise<DataSourceResult> => {
+      try {
         const { host } = context?.frontasticContext?.project?.configuration['wordpress'];
         const handle = config?.configuration?.pageHandle;
 
@@ -51,7 +56,12 @@ export default {
         return {
           dataSourcePayload: { blogPage: pageBy },
         } as DataSourceResult;
-      },
+      } catch (error) {
+        return {
+          dataSourcePayload: error,
+        } as DataSourceResult;
+      }
+    },
   },
   actions: {
     wordpress: ContentActions,

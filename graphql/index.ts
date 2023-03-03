@@ -59,4 +59,4 @@ const postFilters = gql`
   }
 `;
 
-export { postListQuery, postFilters, postQuery, pageQuery };
+export { postListQuery, postFilters, pageQuery };

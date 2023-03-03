@@ -20,7 +20,7 @@ export class WordpressMapper {
     static wordpressCategoriesToSchema(attributes: FilterSchema[]) {
         const mappedAttributes =  this.gqlToSchema(attributes);
 
-        if (mappedAttributes.length > 0) {
+        if (mappedAttributes && mappedAttributes.length > 0) {
             return {
                 field: 'postCategories',
                 type: 'enum',
@@ -45,7 +45,7 @@ export class WordpressMapper {
     static wordpressTagsToSchema(attributes: FilterSchema[]) {
         const mappedAttributes =  this.gqlToSchema(attributes);
 
-        if (mappedAttributes.length > 0) {
+        if (mappedAttributes && mappedAttributes.length > 0) {
             return {
                 field: 'postTags',
                 type: 'enum',
