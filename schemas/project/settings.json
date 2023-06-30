@@ -1,0 +1,45 @@
+{
+  "schema": [
+    {
+      "name": "Wordpress Blog",
+      "fields": [
+        {
+          "label": "Wordpress URL",
+          "text": "This is the top level URL of your Wordpress site. It can be entered with or without https prefix",
+          "field": "wordpressHost",
+          "type": "string",
+          "translatable": false,
+          "default": "yourblogurl.com",
+          "required": true
+        },
+        {
+          "label": "Wordpress Blog Root",
+          "text": "This field will determine what the URL structure of your blog on Frontend starts with. For example, if you use 'blog' then the dynamic URLs of your blog on Frontend will look similar to: yoursiteurl.com/blog/. It is combined with the settings below to create full page and post routes. ",
+          "field": "wordpressBlogRoot",
+          "type": "string",
+          "translatable": false,
+          "default": "blog",
+          "required": true
+        },
+        {
+          "label": "Wordpress Page Root",
+          "text": "The page root will be used in addition to the blog root to determine what your dynamic blog page routes are on Frontend. E.G. If you use 'pages' then a blog page URL would look similar to this: yoursiteurl.com/blog/pages/page-handle",
+          "field": "wordpressPageRoot",
+          "type": "string",
+          "translatable": false,
+          "default": "pages",
+          "required": true
+        },
+        {
+          "label": "Wordpress Post Root",
+          "text": "The post root serves the same purpose as the page root above just for posts instead of pages. E.G. If you use posts then URLs on your Frontend will look similar to this: yoursiteurl.com/blog/posts/post-handle",
+          "field": "wordpressPostRoot",
+          "type": "string",
+          "translatable": false,
+          "default": "posts",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
