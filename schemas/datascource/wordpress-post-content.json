@@ -1,0 +1,19 @@
+{
+	"customDataSourceType": "wordpress/post-content",
+    "name": "Wordpress Post Content",
+	"category": "Content",
+	"icon": "view_headline",
+	"schema": [
+		{
+			"name": "Settings",
+			"fields": [
+				{
+					"label": "Post Handle",
+					"field": "postHandle",
+					"type": "string",
+					"translatable": false
+				}
+			]
+		}
+	]
+}

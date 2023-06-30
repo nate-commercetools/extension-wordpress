@@ -18,7 +18,7 @@ type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Re
  */
 export const getPostFilters: ActionHook = async (request: Request, actionContext: ActionContext): Promise<Response> => {
   try {
-    const { host } = actionContext?.frontasticContext?.project?.configuration['wordpress'];
+    const host = actionContext?.frontasticContext?.projectConfiguration?.wordpressHost;
     const apollo = new WordpressApollo(`${host}/graphql`);
 
     const postFilterData = await apollo.getWordpress({
@@ -26,8 +26,8 @@ export const getPostFilters: ActionHook = async (request: Request, actionContext
     });
 
     // Map the GQL Data to commercetools schema format
-    const schemafiedCategories = WordpressMapper.wordpressCategoriesToSchema(postFilterData.categories.edges)
-    const schemafiedTags = WordpressMapper.wordpressTagsToSchema(postFilterData.tags.edges)
+    const schemafiedCategories = WordpressMapper.wordpressCategoriesToSchema(postFilterData.categories.edges);
+    const schemafiedTags = WordpressMapper.wordpressTagsToSchema(postFilterData.tags.edges);
 
     // Stringify Data to Return
     const body = JSON.stringify([schemafiedCategories, schemafiedTags]);
