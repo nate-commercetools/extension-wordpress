@@ -21,6 +21,24 @@ const postListQuery = gql`
   }
 `;
 
+const postQuery = gql`
+  query PostQuery($handle: ID!) {
+    post(idType: SLUG, id: $handle) {
+      id
+      title
+      handle: slug
+      summary: excerpt
+      content
+      image: featuredImage {
+        node {
+          url: sourceUrl(size: LARGE)
+          alt: altText
+        }
+      }
+    }
+  }
+`;
+
 const pageQuery = gql`
   query PageQuery($handle: String!) {
     pageBy(uri: $handle) {
@@ -59,4 +77,4 @@ const postFilters = gql`
   }
 `;
 
-export { postListQuery, postFilters, pageQuery };
+export { postListQuery, postFilters, pageQuery, postQuery };
