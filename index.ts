@@ -5,36 +5,35 @@ import {
   DynamicPageSuccessResult,
   DynamicPageContext,
   Request,
-  DynamicPageRedirectResult
+  DynamicPageRedirectResult,
+  Context
 } from '@frontastic/extension-types';
-import { BlogConfiguration } from './interfaces/WordpressInterfaces'
 import WordpressApollo from './apis/BaseApi';
 import * as ContentActions from './actionControllers/WordpressController';
 import { postListQuery, pageQuery, postQuery } from './graphql';
-import { sanitizeURL } from './utils/api-helpers'
+import { StudioConfig } from './interfaces/StudioConfig';
+import { getWordpressConfig } from './utils/GetConfig';
+import { getPath } from './utils/Request'
 
 export default {
   'dynamic-page-handler': async (
     request: Request,
     context: DynamicPageContext,
-  ): Promise<DynamicPageSuccessResult | DynamicPageRedirectResult | null> => {
-    // Blog Vars
-    const blogRoot = context?.frontasticContext?.projectConfiguration.wordpressBlogRoot || 'blog';
-    const blogPageRoot = context?.frontasticContext?.projectConfiguration.wordpressPageRoot || 'pages';
-    const blogPostRoot = context?.frontasticContext?.projectConfiguration.wordpressPostRoot || 'posts';
+  ): Promise<DynamicPageSuccessResult | DynamicPageRedirectResult | null > => {
+    const blogSettings: StudioConfig = getWordpressConfig(context?.frontasticContext as Context);
 
     // Extract blog data from request path
-    const blogPageMatch = request?.query?.path?.match(new RegExp(`/${blogRoot}/([^ /]+)/([^ /]+)`));
+    const currentPath = getPath(request);
+    const blogPageMatch = currentPath.match(new RegExp(`/${blogSettings.blogRoot}/([^ /]+)/([^ /]+)`));
     const handle = blogPageMatch[2];
 
     if (blogPageMatch && handle) {
       try {
-        const host = context?.frontasticContext?.projectConfiguration?.wordpressHost;
-        const apollo = new WordpressApollo(`https://${sanitizeURL(host)}/graphql`);
+        const apollo = new WordpressApollo(blogSettings);
 
         // Check what resource type should be called
         switch (blogPageMatch[1]) {
-          case blogPageRoot:
+          case blogSettings.pageRoot:
             const { pageBy } = await apollo.getWordpress({
               query: pageQuery,
               variables: {
@@ -43,19 +42,17 @@ export default {
             });
 
             if (pageBy) {
-                return {
-                    dynamicPageType: 'wordpress/blog-page',
-                    dataSourcePayload: { blogPage: pageBy },
-                    pageMatchingPayload: { blogPage: pageBy },
-                } as DynamicPageSuccessResult;
-            } else  {
-                // No Blog resource found, send to 404 or anywhere else you prefer
-                return {
-                    redirectLocation: '/404',
-                } as DynamicPageRedirectResult;
+              return {
+                dynamicPageType: 'wordpress/blog-page',
+                dataSourcePayload: { blogPage: pageBy },
+                pageMatchingPayload: { blogPage: pageBy },
+              } as DynamicPageSuccessResult;
+            } else {
+              // No Blog resource found
+              throw ("No Wordpress data found.");
             }
 
-          case blogPostRoot:
+          case blogSettings.postRoot:
             const { post } = await apollo.getWordpress({
               query: postQuery,
               variables: {
@@ -64,35 +61,31 @@ export default {
             });
 
             if (post) {
-                return {
-                    dynamicPageType: 'wordpress/blog-post',
-                    dataSourcePayload: { post },
-                    pageMatchingPayload: { post },
-                } as DynamicPageSuccessResult;
-            } else  {
-                // No Blog resource found, send to 404 or anywhere else you prefer
-                return {
-                    redirectLocation: '/404',
-                } as DynamicPageRedirectResult;
+              return {
+                dynamicPageType: 'wordpress/blog-post',
+                dataSourcePayload: { post },
+                pageMatchingPayload: { post },
+              } as DynamicPageSuccessResult;
+            } else {
+              // No Blog resource found
+              throw ("No Wordpress data found.");
             }
 
           default:
-            // If the route doesn't match up send to 404 or anywhere else you prefer
-            return {
-                redirectLocation: '/404',
-            } as DynamicPageRedirectResult;
+            // No Blog resource found
+            throw ("No Wordpress data found.");
         }
       } catch (error) {
-        // Error, send to error page
-        return {
-            redirectLocation: '/404',
-        } as DynamicPageRedirectResult;
+        // Handle the error
+        console.log('The Wordpress dynamic page handler threw an error.', error);
+        return null;
       }
     } else {
-        // If the route doesn't match up send to 404 or anywhere else you prefer
-        return {
-            redirectLocation: '/404',
-        } as DynamicPageRedirectResult;
+      // If the route doesn't match up send to 404 or anywhere else you prefer
+      return {
+        statusCode: 404,
+        redirectLocation: '/404',
+      } as DynamicPageRedirectResult;
     }
   },
   'data-sources': {
@@ -101,14 +94,8 @@ export default {
       context: DataSourceContext,
     ): Promise<DataSourceResult> => {
       try {
-        const host = context?.frontasticContext?.projectConfiguration?.wordpressHost;
-        const apollo = new WordpressApollo(`https://${sanitizeURL(host)}/graphql`);
-        // Blog Vars
-        const blogConfiguration: BlogConfiguration = {
-            blogRoot: context?.frontasticContext?.projectConfiguration.wordpressBlogRoot || 'blog',
-            blogPostRoot: context?.frontasticContext?.projectConfiguration.wordpressPostRoot || 'posts',
-        }
-
+        const blogSettings: StudioConfig = getWordpressConfig(context?.frontasticContext as Context);
+        const apollo = new WordpressApollo(blogSettings);
 
         // Variables are extracted from Dynamic Filters in studio, if no filters are found then
         // the query will just return the latest posts
@@ -127,7 +114,7 @@ export default {
         });
 
         return {
-          dataSourcePayload: { blogPosts: posts, blogConfiguration },
+          dataSourcePayload: { blogPosts: posts },
         } as DataSourceResult;
       } catch (error) {
         return {
@@ -140,23 +127,26 @@ export default {
       context: DataSourceContext,
     ): Promise<DataSourceResult> => {
       try {
-        const host = context?.frontasticContext?.projectConfiguration?.wordpressHost;
+        const blogSettings: StudioConfig = getWordpressConfig(context?.frontasticContext as Context);
         const handle = config?.configuration?.pageHandle;
 
         if (handle) {
-            const apollo = new WordpressApollo(`https://${sanitizeURL(host)}/graphql`);
-            const { pageBy } = await apollo.getWordpress({
+          const apollo = new WordpressApollo(blogSettings);
+
+          const { pageBy } = await apollo.getWordpress({
             query: pageQuery,
             variables: {
-                handle,
+              handle,
             },
-            });
+          });
 
-            return {
+          return {
             dataSourcePayload: { blogPage: pageBy },
-            } as DataSourceResult;
+          } as DataSourceResult;
         } else {
-            return null
+          return {
+            dataSourcePayload: null
+          } as DataSourceResult;
         }
       } catch (error) {
         return {
@@ -169,10 +159,11 @@ export default {
       context: DataSourceContext,
     ): Promise<DataSourceResult> => {
       try {
-        const host = context?.frontasticContext?.projectConfiguration?.wordpressHost;
+        const blogSettings: StudioConfig = getWordpressConfig(context?.frontasticContext as Context);
         const handle = config?.configuration?.postHandle;
 
-        const apollo = new WordpressApollo(`https://${sanitizeURL(host)}/graphql`);
+        const apollo = new WordpressApollo(blogSettings);
+
         const { post } = await apollo.getWordpress({
           query: postQuery,
           variables: {

@@ -1,3 +1,12 @@
+## Version 1.0.2-beta.2 (2023-12-27)
+
+** New Features **
+
+- Retrieve Project Settings directly from the Studio
+- Updated README
+- Added Project Settings and Dynamic Page schemas
+- General code optimizations
+
 ## Version 1.0.1-beta.1 (2023-06-30)
 
 ** New Features **

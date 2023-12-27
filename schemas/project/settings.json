@@ -1,21 +1,30 @@
 {
   "schema": [
     {
-      "name": "Wordpress Blog",
+      "name": "Commercetools Frontend - Wordpress Extension",
       "fields": [
         {
           "label": "Wordpress URL",
           "text": "This is the top level URL of your Wordpress site. It can be entered with or without https prefix",
-          "field": "wordpressHost",
+          "field": "EXTENSION_WORDPRESS_HOST_URL",
           "type": "string",
           "translatable": false,
           "default": "yourblogurl.com",
           "required": true
         },
         {
+          "label": "Wordpress API URL",
+          "text": "If you have an API Endpoint that's different than /graphql, then configure it here. Otherwise leave the default /graphql endpoint.",
+          "field": "EXTENSION_WORDPRESS_API_URL",
+          "type": "string",
+          "translatable": false,
+          "default": "/graphql",
+          "required": true
+        },
+        {
           "label": "Wordpress Blog Root",
           "text": "This field will determine what the URL structure of your blog on Frontend starts with. For example, if you use 'blog' then the dynamic URLs of your blog on Frontend will look similar to: yoursiteurl.com/blog/. It is combined with the settings below to create full page and post routes. ",
-          "field": "wordpressBlogRoot",
+          "field": "EXTENSION_WORDPRESS_API_BLOG_ROOT",
           "type": "string",
           "translatable": false,
           "default": "blog",
@@ -24,7 +33,7 @@
         {
           "label": "Wordpress Page Root",
           "text": "The page root will be used in addition to the blog root to determine what your dynamic blog page routes are on Frontend. E.G. If you use 'pages' then a blog page URL would look similar to this: yoursiteurl.com/blog/pages/page-handle",
-          "field": "wordpressPageRoot",
+          "field": "EXTENSION_WORDPRESS_API_PAGE_ROOT",
           "type": "string",
           "translatable": false,
           "default": "pages",
@@ -33,7 +42,7 @@
         {
           "label": "Wordpress Post Root",
           "text": "The post root serves the same purpose as the page root above just for posts instead of pages. E.G. If you use posts then URLs on your Frontend will look similar to this: yoursiteurl.com/blog/posts/post-handle",
-          "field": "wordpressPostRoot",
+          "field": "EXTENSION_WORDPRESS_API_POST_ROOT",
           "type": "string",
           "translatable": false,
           "default": "posts",

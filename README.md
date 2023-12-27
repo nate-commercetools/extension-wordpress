@@ -1,9 +1,9 @@
-# Composable Frontend Wordpress Extension
-This extension for Composable Frontend is designed to connect Wordpress to Frontend in order to source various content for displaying to customers.
+# commercetools Frontend Wordpress Extension
+This extension for commercetools Frontend is designed to connect Wordpress to Frontend in order to source various content for displaying to customers.
 
 ## Prerequisites
 ---
-1. An up-to-date Composable Frontend instance with access to Studio and the GitHub repository where the code is stored
+1. An up-to-date commercetools Frontend instance with access to Studio and the GitHub repository where the code is stored
 2. A publicly available Wordpress site with [WPGraphQL](https://wordpress.org/plugins/wp-graphql/) installed
 
 ## Install Dependencies & Schemas
@@ -14,7 +14,7 @@ This extension for Composable Frontend is designed to connect Wordpress to Front
    yarn add  @apollo/client react cross-fetch graphql
    ```
 
-2. [Upload](https://docs.commercetools.com/frontend-studio/using-the-schema-editor#data-sources-schema) the datasource schemas from `schemas/datasource` to Studio
+2. [Upload](https://docs.commercetools.com/frontend-studio/using-the-schema-editor#data-sources-schema) the datasource, Dynamic Page, and Project Settings schemas from `./schemas` to Studio
 
 3. Add the Wordpress URL to Developer > Project Settings > Wordpress Blog within your Studio. There are several fields to fill out including the Blog URL, and several routing configurations that will map to how the Blog Pages & Posts are routed on your Frontend.
 

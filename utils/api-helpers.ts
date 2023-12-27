@@ -8,4 +8,4 @@ export const sanitizeURL = (url: string) => {
   url = url.replace(/^https?:\/\//, '');
 
   return url;
-}
+};

@@ -1,5 +1,7 @@
 import { ApolloClient, InMemoryCache, createHttpLink, DocumentNode } from '@apollo/client';
 import fetch from 'cross-fetch';
+import { StudioConfig } from '../interfaces/StudioConfig';
+import { sanitizeURL } from '../utils/api-helpers';
 
 interface GraphqlQuery {
   query: DocumentNode;
@@ -9,9 +11,9 @@ interface GraphqlQuery {
 export default class WordpressApollo {
   private client: ApolloClient<unknown>;
 
-  constructor(host: string) {
+  constructor(settings: StudioConfig) {
     const link = createHttpLink({
-      uri: host,
+      uri: `https://${sanitizeURL(settings.hostUrl)}${sanitizeURL(settings.apiUrl)}`,
       fetch, // Required for enabling Node to use fetch
     });
 
