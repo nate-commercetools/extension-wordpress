@@ -1,0 +1,8 @@
+{
+  "dynamicPageType": "wordpress/blog-page",
+  "name": "Wordpress Blog Page",
+  "icon": "",
+  "category": "blog",
+  "isMultiple": true,
+  "dataSourceType": "wordpress/page-content"
+}

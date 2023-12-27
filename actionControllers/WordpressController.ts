@@ -2,6 +2,8 @@ import { ActionContext, Request, Response } from '@frontastic/extension-types/sr
 import WordpressApollo from '../apis/BaseApi';
 import { postFilters } from '../graphql';
 import { WordpressMapper } from '../mappers/WordpressMapper';
+import { getWordpressConfig } from '../utils/GetConfig';
+import { StudioConfig } from '../interfaces/StudioConfig';
 
 type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Response>;
 
@@ -18,8 +20,8 @@ type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Re
  */
 export const getPostFilters: ActionHook = async (request: Request, actionContext: ActionContext): Promise<Response> => {
   try {
-    const host = actionContext?.frontasticContext?.projectConfiguration?.wordpressHost;
-    const apollo = new WordpressApollo(`${host}/graphql`);
+    const blogSettings: StudioConfig = getWordpressConfig(actionContext?.frontasticContext.projectConfiguration);
+    const apollo = new WordpressApollo(blogSettings);
 
     const postFilterData = await apollo.getWordpress({
       query: postFilters,
